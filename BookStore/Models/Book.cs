@@ -18,6 +18,6 @@ public class Book : BaseEntity
     public List<BookKeyword> BookKeywords { get; set; }
 
     public List<BookRelation> RelatedTo { get; set; }
-    public List<BookRelation> RelatedّFrom { get; set; }
+    public List<BookRelation> RelatedFrom { get; set; }
 
 }
