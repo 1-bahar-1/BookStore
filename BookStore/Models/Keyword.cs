@@ -1,6 +1,6 @@
 ﻿namespace BookStore.Models;
 
-public class Keyword
+public class Keyword : BaseEntity
 {
     public int Id { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace BookStore.Models;
 
-public class Book
+public class Book : BaseEntity
 {
     public int Id { get; set; }
 
@@ -17,5 +17,7 @@ public class Book
     public List<BookAuthor> BookAuthors { get; set; }
     public List<BookKeyword> BookKeywords { get; set; }
 
-    public List<BookRelation> RelatedBooks { get; set; }
+    public List<BookRelation> RelatedTo { get; set; }
+    public List<BookRelation> RelatedّFrom { get; set; }
+
 }

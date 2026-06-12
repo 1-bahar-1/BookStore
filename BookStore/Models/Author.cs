@@ -1,6 +1,6 @@
 ﻿namespace BookStore.Models;
 
-public class Author
+public class Author : BaseEntity
 {
     public int Id { get; set; }
 
