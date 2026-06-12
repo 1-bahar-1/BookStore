@@ -42,4 +42,34 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+
+}
+    //var adminEmail = "admin@test.com";
+    //var adminPassword = "Admin123!";
+
+    //var user = await userManager.FindByEmailAsync(adminEmail);
+
+    //if (user == null)
+    //{
+    //    user = new IdentityUser
+    //    {
+    //        UserName = adminEmail,
+    //        Email = adminEmail
+    //    };
+
+//        await userManager.CreateAsync(user, adminPassword);
+//        await userManager.AddToRoleAsync(user, "Admin"); 
+//    }
+//}
 app.Run();

@@ -1,7 +1,8 @@
 ﻿using BookStore.Data;
-using BookStore.Repositories.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using BookStore.Models;
+using BookStore.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -23,15 +24,17 @@ public class BookController : Controller
         var books = await _bookRepository.GetAllAsync();
         return View(books);
     }
-    // GET: Book/Create
+
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
         return View();
     }
 
-    // POST: Book/Create
+    
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(Book book)
     {
         if (!ModelState.IsValid)
