@@ -1,0 +1,22 @@
+﻿@model BookStore.Models.Book
+
+<h2>@Model.Title</h2>
+
+<p>دسته: @Model.Category?.Name</p>
+<p>صفحات: @Model.PageCount</p>
+
+<h4>نویسندگان:</h4>
+<ul>
+    @foreach (var a in Model.BookAuthors)
+    {
+        <li>@a.Author.FullName</li>
+    }
+</ul>
+
+<h4>کلمات کلیدی:</h4>
+<ul>
+    @foreach (var k in Model.BookKeywords)
+    {
+        <li>@k.Keyword.Word</li>
+    }
+</ul>

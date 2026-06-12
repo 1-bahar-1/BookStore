@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookStore.ViewModels;
-
 public class RegisterViewModel
 {
     [Required]
@@ -10,4 +8,9 @@ public class RegisterViewModel
     [Required]
     [DataType(DataType.Password)]
     public string Password { get; set; }
+
+    [Required]
+    [DataType(DataType.Password)]
+    [Compare("Password", ErrorMessage = "رمزها یکسان نیستند")]
+    public string ConfirmPassword { get; set; }
 }

@@ -9,4 +9,5 @@ public interface IBookRepository
     Task AddAsync(Book book);
     Task UpdateAsync(Book book);
     Task DeleteAsync(int id);
+    Task<Book> GetBySlugAsync(string slug);
 }

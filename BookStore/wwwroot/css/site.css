@@ -20,3 +20,31 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+body {
+    font-family: Vazirmatn, sans-serif;
+}
+
+.navbar {
+    border-radius: 0 0 12px 12px;
+}
+
+    .navbar .btn {
+        border-radius: 8px;
+    }
+
+input.form-control {
+    border-radius: 8px;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+input.form-control {
+    border-radius: 8px;
+}

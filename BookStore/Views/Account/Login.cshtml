@@ -1,9 +1,43 @@
 ﻿@model BookStore.ViewModels.LoginViewModel
 
-<h2>Login</h2>
+@{
+    ViewData["Title"] = "ورود";
+}
 
-<form asp-action="Login" method="post">
-    <input asp-for="Email" class="form-control" placeholder="Email" />
-    <input asp-for="Password" class="form-control" placeholder="Password" />
-    <button type="submit">Login</button>
-</form>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+
+        <div class="card shadow-sm p-4">
+
+            <h3 class="text-center mb-4">🔐 ورود</h3>
+
+            <form asp-action="Login" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">ایمیل</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">رمز عبور</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <button class="btn btn-primary w-100">ورود</button>
+
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="/Account/Register">ثبت نام نکردی؟</a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

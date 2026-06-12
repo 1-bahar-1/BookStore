@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookStore.Controllers;
-
+[Authorize]
 public class BookController : Controller
 {
     private readonly IBookRepository _bookRepository;
@@ -45,6 +45,13 @@ public class BookController : Controller
 
         await _bookRepository.AddAsync(book);
         return RedirectToAction("Index");
+    }
+    public async Task<IActionResult> Details(string slug)
+    {
+        var book = await _bookRepository.GetBySlugAsync(slug);
+        if (book == null) return NotFound();
+
+        return View(book);
     }
 
 }
