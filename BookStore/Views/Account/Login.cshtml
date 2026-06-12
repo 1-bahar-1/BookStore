@@ -1,0 +1,9 @@
+﻿@model BookStore.ViewModels.LoginViewModel
+
+<h2>Login</h2>
+
+<form asp-action="Login" method="post">
+    <input asp-for="Email" class="form-control" placeholder="Email" />
+    <input asp-for="Password" class="form-control" placeholder="Password" />
+    <button type="submit">Login</button>
+</form>

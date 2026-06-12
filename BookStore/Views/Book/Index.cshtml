@@ -1,0 +1,27 @@
+﻿@model List<BookStore.Models.Book>
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<h2>Books</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Page Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.Category?.Name</td>
+                <td>@book.PageCount</td>
+            </tr>
+        }
+    </tbody>
+</table>

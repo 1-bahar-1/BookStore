@@ -1,0 +1,9 @@
+﻿@model BookStore.ViewModels.RegisterViewModel
+
+<h2>Register</h2>
+
+<form asp-action="Register" method="post">
+    <input asp-for="Email" class="form-control" placeholder="Email" />
+    <input asp-for="Password" class="form-control" placeholder="Password" />
+    <button type="submit">Register</button>
+</form>
