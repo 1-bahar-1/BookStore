@@ -1,6 +1,6 @@
 using BookStore.Data;
-using BookStore.Repositories;
-using BookStore.Repositories.Interfaces;
+using BookStore.Services;
+using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

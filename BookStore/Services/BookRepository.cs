@@ -1,9 +1,9 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
-using BookStore.Repositories.Interfaces;
+using BookStore.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStore.Repositories;
+namespace BookStore.Services;
 
 public class BookRepository : IBookRepository
 {

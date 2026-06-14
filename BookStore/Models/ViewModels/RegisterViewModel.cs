@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+namespace BookStore.Models.ViewModels;
 public class RegisterViewModel
 {
     [Required]

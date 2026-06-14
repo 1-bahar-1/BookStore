@@ -1,8 +1,7 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
-using BookStore.Repositories.Interfaces;
+using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
