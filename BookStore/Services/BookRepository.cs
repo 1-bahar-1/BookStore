@@ -29,16 +29,7 @@ public class BookRepository : IBookRepository
             .Include(b => b.BookKeywords).ThenInclude(bk => bk.Keyword)
             .FirstOrDefaultAsync(b => b.Id == id);
     }
-    public async Task<Book> GetBySlugAsync(string slug)
-    {
-        return await _context.Books
-            .Include(b => b.Category)
-            .Include(b => b.BookAuthors)
-                .ThenInclude(ba => ba.Author)
-            .Include(b => b.BookKeywords)
-                .ThenInclude(bk => bk.Keyword)
-            .FirstOrDefaultAsync(b => b.Slug == slug);
-    }
+
 
     public async Task AddAsync(Book book)
     {
