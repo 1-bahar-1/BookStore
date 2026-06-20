@@ -1,5 +1,6 @@
 using BookStore.Data;
 using BookStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public class KeywordController : Controller
     }
 
     [HttpGet("keywords/{word}")]
+    [Authorize]
     public async Task<IActionResult> Details(string word)
     {
         var keyword = await _context.Keywords

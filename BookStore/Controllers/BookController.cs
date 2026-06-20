@@ -15,6 +15,7 @@ public class BookController : Controller
     }
 
     // لیست + جستجو
+    [Authorize]
     public async Task<IActionResult> Index(string? q)
     {
         var query = _context.Books
@@ -35,6 +36,7 @@ public class BookController : Controller
 
     // جزئیات با slug (SEO)
     [HttpGet("/books/{slug}")]
+    [Authorize]
     public async Task<IActionResult> Details(string slug)
     {
         var book = await _context.Books

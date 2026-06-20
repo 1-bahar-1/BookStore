@@ -1,5 +1,6 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public class HomeController : Controller
         _context = context;
     }
 
+    [Authorize]
     public async Task<IActionResult> Index(int? categoryId, int? authorId, int? keywordId, int page = 1)
     {
         var query = _context.Books

@@ -1,5 +1,6 @@
 using BookStore.Data;
 using BookStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public class CategoryController : Controller
     }
 
     [HttpGet("categories/{slug}")]
+    [Authorize]
     public async Task<IActionResult> Details(string slug)
     {
         var category = await _context.Categories

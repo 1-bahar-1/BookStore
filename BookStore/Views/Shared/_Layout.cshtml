@@ -49,12 +49,12 @@
                         </li>
                     </ul>
 
-                    <!-- 🔍 Search (اصلاح شده → BooksController) -->
-                    <form class="d-flex me-auto" method="get" asp-controller="Books" asp-action="Index">
+                    <!-- 🔍 Search -->
+                    <form class="d-flex me-auto" method="get" asp-controller="Book" asp-action="Index">
                         <input class="form-control me-2"
                                name="q"
                                value="@Context.Request.Query["q"]"
-                               placeholder="جستجوی کتاب..."
+                               placeholder="جستجوی کتاب، نویسنده..."
                                aria-label="Search" />
                         <button class="btn btn-outline-primary" type="submit">جستجو</button>
                     </form>
@@ -90,11 +90,11 @@
                                     }
 
                                     <li>
-                                        <a class="dropdown-item text-danger"
-                                           asp-controller="Account"
-                                           asp-action="Logout">
-                                            خروج از حساب
-                                        </a>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start">
+                                                خروج از حساب
+                                            </button>
+                                        </form>
                                     </li>
 
                                 </ul>
