@@ -14,7 +14,10 @@
         <tr>
             <th>عنوان</th>
             <th>دسته‌بندی</th>
+            <th>ISBN</th>
+            <th>نوع</th>
             <th>تعداد صفحات</th>
+            <th>کاور</th>
             <th>فایل</th>
             <th>عملیات</th>
         </tr>
@@ -25,7 +28,28 @@
             <tr>
                 <td>@item.Title</td>
                 <td>@item.Category?.Name</td>
+                <td>@item.ISBN</td>
+                <td>
+                    @if (item.IsFree)
+                    {
+                        <span class="badge bg-success">رایگان</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">پولی</span>
+                    }
+                </td>
                 <td>@item.PageCount</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.CoverImagePath))
+                    {
+                        <img src="@item.CoverImagePath" alt="کاور" style="height: 40px; border-radius: 4px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.FilePath))
                     {

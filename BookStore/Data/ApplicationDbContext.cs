@@ -29,6 +29,11 @@ public class ApplicationDbContext : IdentityDbContext
             entity.Property(e => e.Title).IsRequired().HasMaxLength(300);
             entity.Property(e => e.Slug).IsRequired().HasMaxLength(300);
             entity.Property(e => e.FilePath).HasMaxLength(500);
+            entity.Property(e => e.ISBN).HasMaxLength(20);
+            entity.Property(e => e.IsFree).HasDefaultValue(true);
+            entity.Property(e => e.Description).HasMaxLength(2000);
+            entity.Property(e => e.CoverImagePath).HasMaxLength(500);
+            entity.Property(e => e.PublishedYear);
             entity.HasIndex(e => e.Slug).IsUnique();
             entity.Property(e => e.CategoryId).IsRequired();
 

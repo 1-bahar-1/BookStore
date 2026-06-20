@@ -34,6 +34,53 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
+                                <label asp-for="ISBN" class="form-label"></label>
+                                <input asp-for="ISBN" class="form-control" placeholder="مثال: 978-964-12345-1-1" />
+                                <span asp-validation-for="ISBN" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PublishedYear" class="form-label"></label>
+                                <input asp-for="PublishedYear" class="form-control" type="number" min="1000" max="2100" />
+                                <span asp-validation-for="PublishedYear" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="IsFree" class="form-label"></label>
+                        <select asp-for="IsFree" class="form-select">
+                            <option value="true">رایگان</option>
+                            <option value="false">پولی</option>
+                        </select>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.CoverImagePath))
+                    {
+                        <div class="form-group mb-3">
+                            <label class="form-label">کاور فعلی</label>
+                            <div>
+                                <img src="@Model.CoverImagePath" alt="کاور" style="max-height: 150px; border-radius: 8px; border: 1px solid #dee2e6;" />
+                            </div>
+                        </div>
+                    }
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">بارگذاری کاور @(string.IsNullOrEmpty(Model.CoverImagePath) ? "" : "(اختیاری - برای جایگزینی)")</label>
+                        <input type="file" name="coverImage" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                        <span asp-validation-for="CoverImagePath" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
                                 <label asp-for="PageCount" class="form-label"></label>
                                 <input asp-for="PageCount" class="form-control" type="number" min="1" />
                                 <span asp-validation-for="PageCount" class="text-danger"></span>

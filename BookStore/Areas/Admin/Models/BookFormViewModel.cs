@@ -24,6 +24,19 @@ public class BookFormViewModel
 
     public string? FilePath { get; set; }
 
+    [MaxLength(20, ErrorMessage = "ISBN نمی‌تواند بیشتر از 20 کاراکتر باشد")]
+    public string? ISBN { get; set; }
+
+    public bool IsFree { get; set; } = true;
+
+    [MaxLength(2000, ErrorMessage = "توضیحات نمی‌تواند بیشتر از 2000 کاراکتر باشد")]
+    public string? Description { get; set; }
+
+    [MaxLength(500, ErrorMessage = "مسیر کاور نمی‌تواند بیشتر از 500 کاراکتر باشد")]
+    public string? CoverImagePath { get; set; }
+
+    public int? PublishedYear { get; set; }
+
     public int[]? AuthorIds { get; set; }
     public int[]? KeywordIds { get; set; }
     public int[]? RelatedBookIds { get; set; }

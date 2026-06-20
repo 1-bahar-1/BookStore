@@ -38,7 +38,7 @@ public class BooksController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(BookFormViewModel vm, IFormFile? pdfFile, int[]? AuthorIds, int[]? KeywordIds, int[]? RelatedBookIds)
+    public async Task<IActionResult> Create(BookFormViewModel vm, IFormFile? pdfFile, IFormFile? coverImage, int[]? AuthorIds, int[]? KeywordIds, int[]? RelatedBookIds)
     {
         if (!ModelState.IsValid)
         {
@@ -51,8 +51,24 @@ public class BooksController : Controller
             Title = vm.Title,
             Slug = vm.Slug,
             PageCount = vm.PageCount,
-            CategoryId = vm.CategoryId
+            CategoryId = vm.CategoryId,
+            ISBN = vm.ISBN,
+            IsFree = vm.IsFree,
+            Description = vm.Description,
+            PublishedYear = vm.PublishedYear
         };
+
+        if (coverImage != null && coverImage.Length > 0)
+        {
+            var coverResult = await UploadCoverImage(coverImage);
+            if (!coverResult.Success)
+            {
+                ModelState.AddModelError("CoverImagePath", coverResult.ErrorMessage!);
+                await LoadFormDataAsync(vm);
+                return View(vm);
+            }
+            book.CoverImagePath = coverResult.FilePath;
+        }
 
         if (pdfFile != null && pdfFile.Length > 0)
         {
@@ -109,7 +125,7 @@ public class BooksController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, BookFormViewModel vm, IFormFile? pdfFile)
+    public async Task<IActionResult> Edit(int id, BookFormViewModel vm, IFormFile? pdfFile, IFormFile? coverImage)
     {
         if (id != vm.Id)
             return NotFound();
@@ -133,6 +149,23 @@ public class BooksController : Controller
         existingBook.Slug = vm.Slug;
         existingBook.PageCount = vm.PageCount;
         existingBook.CategoryId = vm.CategoryId;
+        existingBook.ISBN = vm.ISBN;
+        existingBook.IsFree = vm.IsFree;
+        existingBook.Description = vm.Description;
+        existingBook.PublishedYear = vm.PublishedYear;
+
+        if (coverImage != null && coverImage.Length > 0)
+        {
+            var coverResult = await UploadCoverImage(coverImage);
+            if (!coverResult.Success)
+            {
+                ModelState.AddModelError("CoverImagePath", coverResult.ErrorMessage!);
+                await LoadFormDataAsync(vm);
+                return View(vm);
+            }
+            DeletePhysicalFile(existingBook.CoverImagePath);
+            existingBook.CoverImagePath = coverResult.FilePath;
+        }
 
         if (pdfFile != null && pdfFile.Length > 0)
         {
@@ -238,7 +271,12 @@ public class BooksController : Controller
             Slug = book.Slug,
             PageCount = book.PageCount,
             CategoryId = book.CategoryId,
-            FilePath = book.FilePath
+            FilePath = book.FilePath,
+            ISBN = book.ISBN,
+            IsFree = book.IsFree,
+            Description = book.Description,
+            CoverImagePath = book.CoverImagePath,
+            PublishedYear = book.PublishedYear
         };
 
         return vm;
@@ -307,5 +345,29 @@ public class BooksController : Controller
 
         if (System.IO.File.Exists(fullPath))
             System.IO.File.Delete(fullPath);
+    }
+
+    private async Task<(bool Success, string? FilePath, string? ErrorMessage)> UploadCoverImage(IFormFile coverImage)
+    {
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+        var extension = Path.GetExtension(coverImage.FileName).ToLowerInvariant();
+
+        if (!allowedExtensions.Contains(extension))
+            return (false, null, "فقط فایل‌های JPG, PNG و WebP مجاز هستند.");
+
+        var coversFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "covers");
+        if (!Directory.Exists(coversFolder))
+            Directory.CreateDirectory(coversFolder);
+
+        var fileName = $"{Guid.NewGuid()}{extension}";
+        var filePath = Path.Combine(coversFolder, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await coverImage.CopyToAsync(stream);
+        }
+
+        var relativePath = "/covers/" + fileName;
+        return (true, relativePath, null);
     }
 }

@@ -23,6 +23,19 @@ public class Book : BaseEntity
     [MaxLength(300, ErrorMessage = "Slug نمی‌تواند بیشتر از 300 کاراکتر باشد")]
     public string? Slug { get; set; }
 
+    [MaxLength(20, ErrorMessage = "ISBN نمی‌تواند بیشتر از 20 کاراکتر باشد")]
+    public string? ISBN { get; set; }
+
+    public bool IsFree { get; set; } = true;
+
+    [MaxLength(2000, ErrorMessage = "توضیحات نمی‌تواند بیشتر از 2000 کاراکتر باشد")]
+    public string? Description { get; set; }
+
+    [MaxLength(500, ErrorMessage = "مسیر عکس نمی‌تواند بیشتر از 500 کاراکتر باشد")]
+    public string? CoverImagePath { get; set; }
+
+    public int? PublishedYear { get; set; }
+
     [MaxLength(500, ErrorMessage = "مسیر فایل نمی‌تواند بیشتر از 500 کاراکتر باشد")]
     public string? FilePath { get; set; }
 
