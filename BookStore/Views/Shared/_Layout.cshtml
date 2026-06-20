@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BookStore</title>
 
-    <!-- استفاده از نسخه RTL بوت استرپ برای ظاهر بهتر فارسی -->
+    <!-- Bootstrap RTL -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
+
     <style>
         body {
             font-family: Tahoma, Arial, sans-serif;
@@ -43,11 +44,18 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">خانه</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Books" asp-action="Index">کتاب‌ها</a>
+                        </li>
                     </ul>
 
-                    <!-- 🔍 Search (اصلاح شده برای ارسال به HomeController/Index) -->
-                    <form class="d-flex me-auto" method="get" action="/">
-                        <input class="form-control me-2" name="q" value="@Context.Request.Query["q"]" placeholder="جستجوی کتاب..." aria-label="Search" />
+                    <!-- 🔍 Search (اصلاح شده → BooksController) -->
+                    <form class="d-flex me-auto" method="get" asp-controller="Books" asp-action="Index">
+                        <input class="form-control me-2"
+                               name="q"
+                               value="@Context.Request.Query["q"]"
+                               placeholder="جستجوی کتاب..."
+                               aria-label="Search" />
                         <button class="btn btn-outline-primary" type="submit">جستجو</button>
                     </form>
 
@@ -57,26 +65,57 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle text-dark"
+                                   href="#"
+                                   id="userDropdown"
+                                   role="button"
+                                   data-bs-toggle="dropdown">
+
                                     👋 خوش آمدید، @User.Identity.Name
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <li><a class="dropdown-item text-primary" href="/Admin/Books">⚙️ پنل مدیریت</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-primary"
+                                               asp-area="Admin"
+                                               asp-controller="Books"
+                                               asp-action="Index">
+                                                ⚙️ پنل مدیریت
+                                            </a>
+                                        </li>
                                         <li><hr class="dropdown-divider"></li>
                                     }
-                                    <li><a class="dropdown-item text-danger" href="/Account/Logout">خروج از حساب</a></li>
+
+                                    <li>
+                                        <a class="dropdown-item text-danger"
+                                           asp-controller="Account"
+                                           asp-action="Logout">
+                                            خروج از حساب
+                                        </a>
+                                    </li>
+
                                 </ul>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-primary me-2" href="/Account/Login">ورود</a>
+                                <a class="btn btn-outline-primary me-2"
+                                   asp-controller="Account"
+                                   asp-action="Login">
+                                    ورود
+                                </a>
                             </li>
+
                             <li class="nav-item">
-                                <a class="btn btn-primary" href="/Account/Register">ثبت نام</a>
+                                <a class="btn btn-primary"
+                                   asp-controller="Account"
+                                   asp-action="Register">
+                                    ثبت نام
+                                </a>
                             </li>
                         }
 
@@ -96,7 +135,7 @@
     <footer class="mt-5 py-4 bg-white border-top">
         <div class="container text-center text-muted">
             <p class="mb-0">© 2026 BookStore - فروشگاه تخصصی کتاب دیجیتال</p>
-            <small>طراحی و توسعه با ASP.NET Core 9.0</small>
+            <small>طراحی و توسعه با ASP.NET Core</small>
         </div>
     </footer>
 
