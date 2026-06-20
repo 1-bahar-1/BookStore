@@ -1,0 +1,36 @@
+@model BookStore.Models.Author
+
+@{
+    ViewData["Title"] = "افزودن نویسنده جدید";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-4">افزودن نویسنده جدید</h1>
+
+                <form asp-action="Create" asp-controller="Authors" asp-area="Admin" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Slug" class="form-label"></label>
+                        <input asp-for="Slug" class="form-control" />
+                        <span asp-validation-for="Slug" class="text-danger"></span>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">افزودن</button>
+                        <a asp-action="Index" class="btn btn-secondary">لغو</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

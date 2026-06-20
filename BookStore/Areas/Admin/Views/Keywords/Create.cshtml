@@ -1,0 +1,30 @@
+@model BookStore.Models.Keyword
+
+@{
+    ViewData["Title"] = "افزودن کلمه کلیدی جدید";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-4">افزودن کلمه کلیدی جدید</h1>
+
+                <form asp-action="Create" asp-controller="Keywords" asp-area="Admin" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Word" class="form-label"></label>
+                        <input asp-for="Word" class="form-control" />
+                        <span asp-validation-for="Word" class="text-danger"></span>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">افزودن</button>
+                        <a asp-action="Index" class="btn btn-secondary">لغو</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

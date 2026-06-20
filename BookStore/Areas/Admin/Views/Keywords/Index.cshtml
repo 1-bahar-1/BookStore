@@ -1,0 +1,33 @@
+@model IEnumerable<BookStore.Models.Keyword>
+
+@{
+    ViewData["Title"] = "مدیریت کلمات کلیدی";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🔑 مدیریت کلمات کلیدی</h2>
+    <a asp-action="Create" class="btn btn-primary">➕ کلمه کلیدی جدید</a>
+</div>
+
+<table class="table table-bordered bg-white shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th>کلمه کلیدی</th>
+            <th>تعداد کتاب‌ها</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var keyword in Model)
+        {
+            <tr>
+                <td>@keyword.Word</td>
+                <td>@(keyword.BookKeywords?.Count ?? 0)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@keyword.Id" class="btn btn-sm btn-warning">ویرایش</a>
+                    <a asp-action="Delete" asp-route-id="@keyword.Id" class="btn btn-sm btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

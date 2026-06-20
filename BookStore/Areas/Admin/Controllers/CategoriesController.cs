@@ -24,7 +24,7 @@ public class CategoriesController : Controller
     }
 
     // صفحه ایجاد
-    public IActionResult Create() => View();
+    public IActionResult Create() => View(new Category());
 
     // عملیات ایجاد
     [HttpPost]

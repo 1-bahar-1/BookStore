@@ -1,0 +1,33 @@
+@model IEnumerable<BookStore.Models.Author>
+
+@{
+    ViewData["Title"] = "مدیریت نویسندگان";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>✍️ مدیریت نویسندگان</h2>
+    <a asp-action="Create" class="btn btn-primary">➕ نویسنده جدید</a>
+</div>
+
+<table class="table table-bordered bg-white shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th>نام نویسنده</th>
+            <th>تعداد کتاب‌ها</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var author in Model)
+        {
+            <tr>
+                <td>@author.FullName</td>
+                <td>@(author.BookAuthors?.Count ?? 0)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@author.Id" class="btn btn-sm btn-warning">ویرایش</a>
+                    <a asp-action="Delete" asp-route-id="@author.Id" class="btn btn-sm btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
