@@ -1,32 +1,61 @@
-using System.Diagnostics;
-using BookStore.Models;
+﻿using BookStore.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace BookStore.Controllers
+namespace BookStore.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ApplicationDbContext _context;
+
+    public HomeController(ApplicationDbContext context)
     {
-        private readonly ILogger<HomeController> _logger;
+        _context = context;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
+    // صفحه اصلی: لیست کتاب‌ها + جستجو
+    public async Task<IActionResult> Index(string? q)
+    {
+        var query = _context.Books.Include(b => b.Category).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(q))
         {
-            _logger = logger;
+            query = query.Where(b => b.Title.Contains(q) );
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        var books = await query.OrderByDescending(b => b.Id).ToListAsync();
+        return View(books);
+    }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+    // مشاهده جزئیات کتاب بر اساس Slug
+    [Route("book/{slug}")]
+    public async Task<IActionResult> Details(string slug)
+    {
+        var book = await _context.Books
+            .Include(b => b.Category)
+            .FirstOrDefaultAsync(b => b.Slug == slug);
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        if (book == null) return NotFound();
+
+        return View(book);
+    }
+
+    // دانلود امن: فقط برای کاربران وارد شده
+    [Authorize]
+    public async Task<IActionResult> Download(int id)
+    {
+        var book = await _context.Books.FindAsync(id);
+
+        if (book == null || string.IsNullOrEmpty(book.FilePath))
+            return NotFound("فایل یافت نشد.");
+
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", book.FilePath.TrimStart('/'));
+
+        if (!System.IO.File.Exists(filePath))
+            return NotFound("فایل فیزیکی روی سرور یافت نشد.");
+
+        var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+        return File(fileBytes, "application/pdf", $"{book.Slug}.pdf");
     }
 }

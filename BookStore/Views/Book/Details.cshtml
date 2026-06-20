@@ -1,22 +1,75 @@
 ﻿@model BookStore.Models.Book
 
-<h2>@Model.Title</h2>
+@{
+    ViewData["Title"] = Model.Title;
+}
 
-<p>دسته: @Model.Category?.Name</p>
-<p>صفحات: @Model.PageCount</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">خانه</a></li>
+                    <li class="breadcrumb-item active">@Model.Title</li>
+                </ol>
+            </nav>
 
-<h4>نویسندگان:</h4>
-<ul>
-    @foreach (var a in Model.BookAuthors)
-    {
-        <li>@a.Author.FullName</li>
-    }
-</ul>
+            <div class="card shadow-lg border-0 overflow-hidden">
+                <div class="row g-0">
+                    <!-- بخش اطلاعات کتاب -->
+                    <div class="col-md-8">
+                        <div class="card-body p-4">
+                            <h1 class="display-6 fw-bold text-primary mb-3">@Model.Title</h1>
 
-<h4>کلمات کلیدی:</h4>
-<ul>
-    @foreach (var k in Model.BookKeywords)
-    {
-        <li>@k.Keyword.Word</li>
-    }
-</ul>
+                            <div class="d-flex flex-wrap gap-3 mb-4">
+                                <span class="badge bg-info text-dark p-2">
+                                    📁 دسته‌بندی: @(Model.Category?.Name ?? "بدون دسته‌بندی")
+                                </span>
+                                <span class="badge bg-light text-dark border p-2">
+                                    📄 تعداد صفحات: @Model.PageCount
+                                </span>
+                            </div>
+
+                            <h5 class="fw-bold mb-3">درباره این کتاب:</h5>
+                            @* <p class="text-secondary lh-lg" style="text-align: justify;">
+                                @Model.Description
+                            </p> *@
+
+                            <hr class="my-4" />
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                                <!-- لینک دانلود امن که به HomeController/Download وصل می‌شود -->
+                                <a class="btn btn-success btn-lg px-5 shadow"
+                                   asp-controller="Home"
+                                   asp-action="Download"
+                                   asp-route-id="@Model.Id">
+                                    📥 دانلود رایگان فایل PDF
+                                </a>
+
+                                <a href="/" class="btn btn-outline-secondary btn-lg">بازگشت به لیست</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- بخش کناری (می‌توانید اینجا عکس کتاب را بگذارید) -->
+                    <div class="col-md-4 bg-light d-flex align-items-center justify-content-center border-start">
+                        <div class="text-center p-4">
+                            <div class="mb-3">
+                                <i class="display-1 bi bi-book text-muted">📚</i>
+                            </div>
+                            <p class="text-muted small">فرمت فایل: PDF</p>
+                            <p class="text-muted small">امنیت تضمین شده ✅</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <div class="alert alert-warning mt-4 shadow-sm" role="alert">
+                    <strong>توجه:</strong> برای دانلود فایل، ابتدا باید وارد حساب کاربری خود شوید.
+                </div>
+            }
+        </div>
+    </div>
+</div>

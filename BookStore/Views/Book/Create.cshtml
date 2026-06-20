@@ -1,0 +1,63 @@
+﻿@model BookStore.Models.Book
+
+@{
+    ViewData["Title"] = "افزودن کتاب جدید";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📚 افزودن کتاب جدید</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Title" class="form-label">عنوان کتاب</label>
+                        <input asp-for="Title" class="form-control" placeholder="مثلاً: آموزش ASP.NET Core" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Slug" class="form-label">اسلاگ (SEO)</label>
+                        <input asp-for="Slug" class="form-control" placeholder="مثلاً: asp-net-core-guide" />
+                        <span asp-validation-for="Slug" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="CategoryId" class="form-label">دسته‌بندی</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                            <option value="">-- انتخاب کنید --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PageCount" class="form-label">تعداد صفحات</label>
+                        <input asp-for="PageCount" type="number" class="form-control" />
+                        <span asp-validation-for="PageCount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">فایل PDF کتاب</label>
+                    <input type="file" name="pdfFile" class="form-control" accept=".pdf" />
+                    <small class="text-muted">فقط فایل‌های PDF مجاز هستند.</small>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success px-5">ذخیره کتاب</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">بازگشت به لیست</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

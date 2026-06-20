@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using BookStore.Models.ViewModels;
 
 namespace BookStore.Controllers;
 
@@ -16,60 +15,57 @@ public class AccountController : Controller
         _signInManager = signInManager;
     }
 
-    // GET: Register
-    public IActionResult Register()
-    {
-        return View();
-    }
+    [HttpGet]
+    public IActionResult Register() => View();
 
-    // POST: Register
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel model)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(string email, string password, string confirmPassword)
     {
-        if (!ModelState.IsValid) return View(model);
-
-        var user = new IdentityUser
+        if (password != confirmPassword)
         {
-            UserName = model.Email,
-            Email = model.Email
-        };
-
-        var result = await _userManager.CreateAsync(user, model.Password);
-
-        if (result.Succeeded)
-        {
-            await _signInManager.SignInAsync(user, false);
-            return RedirectToAction("Index", "Home");
+            ModelState.AddModelError("", "Password and confirmation password do not match.");
         }
 
-        foreach (var error in result.Errors)
-            ModelState.AddModelError("", error.Description);
+        if (ModelState.IsValid)
+        {
+            var user = new IdentityUser { UserName = email, Email = email };
+            var result = await _userManager.CreateAsync(user, password);
 
-        return View(model);
-    }
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Home");
+            }
 
-    // GET: Login
-    public IActionResult Login()
-    {
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+        }
+
         return View();
     }
 
-    // POST: Login
+    [HttpGet]
+    public IActionResult Login() => View();
+
     [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(string email, string password, bool rememberMe)
     {
-        if (!ModelState.IsValid) return View(model);
+        if (ModelState.IsValid)
+        {
+            var result = await _signInManager.PasswordSignInAsync(email, password, rememberMe, lockoutOnFailure: false);
 
-        var result = await _signInManager.PasswordSignInAsync(
-            model.Email, model.Password, false, false);
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
 
-        if (result.Succeeded)
-            return RedirectToAction("Index", "Home");
+            ModelState.AddModelError("", "Invalid login attempt.");
+        }
 
-        ModelState.AddModelError("", "Invalid login");
-        return View(model);
+        return View();
     }
 
+    [HttpPost]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();

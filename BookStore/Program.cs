@@ -1,9 +1,6 @@
-using BookStore.Data;
-using BookStore.Services;
-using BookStore.Services.Interfaces;
+﻿using BookStore.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +11,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddScoped<IBookRepository, BookRepository>();
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    // تنظیمات ساده برای رمز عبور در زمان توسعه
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+
+    // فعلاً ایمیل تأیید نیاز نباشد
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 var app = builder.Build();
@@ -32,6 +42,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -41,39 +55,65 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Route مخصوص Area ها - باید قبل از route پیش‌فرض باشد
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
+// Route پیش‌فرض سایت
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
+// Seed اولیه Role و Admin User
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
+    var adminRole = "Admin";
 
-    if (!await roleManager.RoleExistsAsync("Admin"))
+    if (!await roleManager.RoleExistsAsync(adminRole))
     {
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
+        await roleManager.CreateAsync(new IdentityRole(adminRole));
     }
 
+    var adminEmail = "admin@test.com";
+    var adminPassword = "Admin123!";
+
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+
+        var createResult = await userManager.CreateAsync(adminUser, adminPassword);
+
+        if (createResult.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, adminRole);
+        }
+        else
+        {
+            foreach (var error in createResult.Errors)
+            {
+                Console.WriteLine($"Admin seed error: {error.Description}");
+            }
+        }
+    }
+    else
+    {
+        if (!await userManager.IsInRoleAsync(adminUser, adminRole))
+        {
+            await userManager.AddToRoleAsync(adminUser, adminRole);
+        }
+    }
 }
-    //var adminEmail = "admin@test.com";
-    //var adminPassword = "Admin123!";
 
-    //var user = await userManager.FindByEmailAsync(adminEmail);
-
-    //if (user == null)
-    //{
-    //    user = new IdentityUser
-    //    {
-    //        UserName = adminEmail,
-    //        Email = adminEmail
-    //    };
-
-//        await userManager.CreateAsync(user, adminPassword);
-//        await userManager.AddToRoleAsync(user, "Admin"); 
-//    }
-//}
 app.Run();
