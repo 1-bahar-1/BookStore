@@ -1,0 +1,31 @@
+@model IEnumerable<BookStore.Models.Book>
+
+@{
+    ViewData["Title"] = ViewBag.CategoryName;
+}
+
+<div class="container mt-4">
+    <a class="btn btn-outline-secondary mb-3" href="/">بازگشت به خانه</a>
+    <h2 class="fw-bold mb-4">📂 کتاب‌های دسته‌بندی <span class="text-primary">@ViewBag.CategoryName</span></h2>
+
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">کتابی در این دسته‌بندی یافت نشد.</p>
+            </div>
+        }
+
+        @foreach (var book in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold text-primary">@book.Title</h6>
+                        <a class="btn btn-sm btn-primary w-100 mt-2 shadow-sm" href="/books/@book.Slug">مشاهده و دانلود</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

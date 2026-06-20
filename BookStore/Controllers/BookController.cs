@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Controllers;
 
-public class BooksController : Controller
+public class BookController : Controller
 {
     private readonly ApplicationDbContext _context;
 
-    public BooksController(ApplicationDbContext context)
+    public BookController(ApplicationDbContext context)
     {
         _context = context;
     }

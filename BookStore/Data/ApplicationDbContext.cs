@@ -15,7 +15,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Author> Authors { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Keyword> Keywords { get; set; }
-
     public DbSet<BookAuthor> BookAuthors { get; set; }
     public DbSet<BookKeyword> BookKeywords { get; set; }
     public DbSet<BookRelation> BookRelations { get; set; }
@@ -24,35 +23,77 @@ public class ApplicationDbContext : IdentityDbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // BookAuthor (many-to-many)
+        modelBuilder.Entity<Book>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(300);
+            entity.Property(e => e.Slug).IsRequired().HasMaxLength(300);
+            entity.Property(e => e.FilePath).HasMaxLength(500);
+            entity.HasIndex(e => e.Slug).IsUnique();
+            entity.Property(e => e.CategoryId).IsRequired();
+
+            entity.HasOne(e => e.Category)
+                .WithMany(c => c.Books)
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Author>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.FullName).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Slug).IsRequired().HasMaxLength(200);
+            entity.HasIndex(e => e.Slug).IsUnique();
+        });
+
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Slug).IsRequired().HasMaxLength(100);
+            entity.HasIndex(e => e.Slug).IsUnique();
+        });
+
+        modelBuilder.Entity<Keyword>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Word).IsRequired().HasMaxLength(100);
+            entity.HasIndex(e => e.Word).IsUnique();
+        });
+
         modelBuilder.Entity<BookAuthor>()
             .HasKey(x => new { x.BookId, x.AuthorId });
 
         modelBuilder.Entity<BookAuthor>()
             .HasOne(x => x.Book)
             .WithMany(b => b.BookAuthors)
-            .HasForeignKey(x => x.BookId);
+            .HasForeignKey(x => x.BookId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<BookAuthor>()
             .HasOne(x => x.Author)
             .WithMany(a => a.BookAuthors)
-            .HasForeignKey(x => x.AuthorId);
+            .HasForeignKey(x => x.AuthorId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // BookKeyword (many-to-many)
         modelBuilder.Entity<BookKeyword>()
             .HasKey(x => new { x.BookId, x.KeywordId });
 
         modelBuilder.Entity<BookKeyword>()
             .HasOne(x => x.Book)
             .WithMany(b => b.BookKeywords)
-            .HasForeignKey(x => x.BookId);
+            .HasForeignKey(x => x.BookId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<BookKeyword>()
             .HasOne(x => x.Keyword)
             .WithMany(k => k.BookKeywords)
-            .HasForeignKey(x => x.KeywordId);
+            .HasForeignKey(x => x.KeywordId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // BookRelation (self relation)
+        modelBuilder.Entity<BookRelation>()
+            .HasKey(br => br.Id);
+
         modelBuilder.Entity<BookRelation>()
             .HasOne(br => br.Book)
             .WithMany(b => b.RelatedTo)
@@ -66,7 +107,6 @@ public class ApplicationDbContext : IdentityDbContext
             .OnDelete(DeleteBehavior.Restrict);
     }
 
-    // ✅ Timestamp handling
     public override int SaveChanges()
     {
         SetTimestamps();

@@ -4,7 +4,9 @@ public class Keyword : BaseEntity
 {
     public int Id { get; set; }
 
-    public string Word { get; set; }
+    [System.ComponentModel.DataAnnotations.Required]
+    [System.ComponentModel.DataAnnotations.MaxLength(100)]
+    public string Word { get; set; } = string.Empty;
 
-    public List<BookKeyword> BookKeywords { get; set; }
+    public ICollection<BookKeyword> BookKeywords { get; set; } = new List<BookKeyword>();
 }

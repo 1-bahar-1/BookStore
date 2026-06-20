@@ -1,8 +1,111 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<BookStore.Models.Book>
+
+@{
+    ViewData["Title"] = "فروشگاه کتاب | صفحه اصلی";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="get" asp-controller="Home" asp-action="Index" class="row g-3">
+                        <div class="col-md-3">
+                            <select name="categoryId" class="form-select">
+                                <option value="">همه دسته‌بندی‌ها</option>
+                                @foreach (var cat in ViewBag.Categories)
+                                {
+                                    <option value="@cat.Id">@cat.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="authorId" class="form-select">
+                                <option value="">همه نویسنده‌ها</option>
+                                @foreach (var author in ViewBag.Authors)
+                                {
+                                    <option value="@author.Id">@author.FullName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="keywordId" class="form-select">
+                                <option value="">همه کلمات کلیدی</option>
+                                @foreach (var keyword in ViewBag.Keywords)
+                                {
+                                    <option value="@keyword.Id">@keyword.Word</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">فیلتر</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">📚 آخرین کتاب‌ها</h2>
+        <span class="text-muted">@ViewBag.TotalItems کتاب یافت شد</span>
+    </div>
+
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">هیچ کتابی یافت نشد.</p>
+            </div>
+        }
+
+        @foreach (var book in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold text-primary">
+                            @book.Title
+                        </h6>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-light text-dark border">
+                                @book.Category?.Name
+                            </span>
+                            <small class="text-muted">📄 @book.PageCount صفحه</small>
+                        </div>
+                        <a class="btn btn-sm btn-primary w-100 mt-2 shadow-sm"
+                           href="/books/@book.Slug">
+                            مشاهده و دانلود
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                @if (ViewBag.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = ViewBag.CurrentPage - 1 })">قبلی</a>
+                    </li>
+                }
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = i })">@i</a>
+                    </li>
+                }
+                @if (ViewBag.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = ViewBag.CurrentPage + 1 })">بعدی</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
 </div>

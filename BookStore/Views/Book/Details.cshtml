@@ -39,12 +39,10 @@
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                                 <!-- لینک دانلود امن که به HomeController/Download وصل می‌شود -->
-                                <a class="btn btn-success btn-lg px-5 shadow"
-                                   asp-controller="Home"
-                                   asp-action="Download"
-                                   asp-route-id="@Model.Id">
-                                    📥 دانلود رایگان فایل PDF
-                                </a>
+    @foreach (var ba in Model.BookAuthors ?? new List<BookAuthor>())
+    {
+        <a class="btn btn-sm btn-outline-dark" href="/authors/@ba.Author.Slug">✍️ @ba.Author.FullName</a>
+    }
 
                                 <a href="/" class="btn btn-outline-secondary btn-lg">بازگشت به لیست</a>
                             </div>
@@ -64,12 +62,60 @@
                 </div>
             </div>
 
-            @if (!User.Identity.IsAuthenticated)
-            {
-                <div class="alert alert-warning mt-4 shadow-sm" role="alert">
-                    <strong>توجه:</strong> برای دانلود فایل، ابتدا باید وارد حساب کاربری خود شوید.
-                </div>
-            }
+    @if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(Model.FilePath))
+    {
+        <a class="btn btn-success btn-lg px-5 shadow"
+           asp-controller="Book"
+           asp-action="Download"
+           asp-route-id="@Model.Id">
+             📥 دانلود رایگان فایل PDF
+        </a>
+    }
+
+    <div class="mt-3">
+        <strong>نویسنده‌ها:</strong>
+        @foreach (var ba in Model.BookAuthors ?? new List<BookAuthor>())
+        {
+            <a class="btn btn-sm btn-outline-dark m-1" href="/authors/@ba.Author.Slug">✍️ @ba.Author.FullName</a>
+        }
+    </div>
+
+    <div class="mt-3">
+        <strong>کلمات کلیدی:</strong>
+        @foreach (var bk in Model.BookKeywords ?? new List<BookKeyword>())
+        {
+            <a class="badge bg-secondary text-decoration-none m-1" href="/keywords/@bk.Keyword.Word">@bk.Keyword.Word</a>
+        }
+    </div>
+
+    @if (Model.RelatedTo != null && Model.RelatedTo.Any())
+    {
+        <div class="mt-4">
+            <h5 class="fw-bold">📚 کتاب‌های مرتبط</h5>
+            <div class="row">
+                @foreach (var rel in Model.RelatedTo)
+                {
+                    var relatedBook = rel.RelatedBook;
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold text-primary">@relatedBook.Title</h6>
+                                <a class="btn btn-sm btn-primary w-100 mt-2" href="/books/@relatedBook.Slug">مشاهده</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <div class="alert alert-warning mt-4 shadow-sm" role="alert">
+            <strong>توجه:</strong> برای دانلود فایل، ابتدا باید وارد حساب کاربری خود شوید.
+        </div>
+    }
+
         </div>
     </div>
 </div>
