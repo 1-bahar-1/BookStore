@@ -1,0 +1,26 @@
+@model BookStore.Models.Book
+
+@{
+    ViewData["Title"] = "حذف کتاب";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <h1 class="h4 mb-4 text-danger">حذف کتاب</h1>
+
+                <p>آیا از حذف کتاب <strong>@Model.Title</strong> مطمئن هستید؟</p>
+                <p class="text-muted small">تمامی اطلاعات مربوط به این کتاب از جمله فایل PDF و تصویر کاور نیز حذف خواهد شد.</p>
+
+                <form asp-action="Delete" asp-controller="Books" asp-area="Admin" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <button type="submit" class="btn btn-danger">بله، حذف کن</button>
+                    <a asp-action="Index" class="btn btn-secondary">خیر، بازگشت</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

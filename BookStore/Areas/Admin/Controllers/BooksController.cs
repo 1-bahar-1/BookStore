@@ -203,18 +203,27 @@ public class BooksController : Controller
     }
 
     [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+    [ValidateAnti ]
+    
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var book = await _context.Books
             .Include(b => b.BookAuthors)
             .Include(b => b.BookKeywords)
             .Include(b => b.RelatedTo)
+            .Include(b => b.RelatedFrom)
             .FirstOrDefaultAsync(b => b.Id == id);
 
         if (book != null)
         {
             DeletePhysicalFile(book.FilePath);
+            DeletePhysicalFile(book.CoverImagePath);
+
+            _context.BookAuthors.RemoveRange(book.BookAuthors);
+            _context.BookKeywords.RemoveRange(book.BookKeywords);
+            _context.BookRelations.RemoveRange(book.RelatedTo);
+            _context.BookRelations.RemoveRange(book.RelatedFrom);
+
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
         }
