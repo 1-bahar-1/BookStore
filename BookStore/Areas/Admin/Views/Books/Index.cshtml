@@ -1,70 +1,86 @@
 ﻿@model IEnumerable<BookStore.Models.Book>
 
 @{
-    ViewData["Title"] = "لیست کتاب‌ها";
+    ViewData["Title"] = "مدیریت کتاب‌ها";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>مدیریت کتاب‌ها</h2>
-    <a asp-action="Create" class="btn btn-success">➕ افزودن کتاب جدید</a>
+<div class="page-header">
+    <h2>📚 مدیریت کتاب‌ها</h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> افزودن کتاب جدید
+    </a>
 </div>
 
-<table class="table table-bordered table-striped bg-white shadow-sm">
-    <thead class="table-dark">
-        <tr>
-            <th>عنوان</th>
-            <th>دسته‌بندی</th>
-            <th>ISBN</th>
-            <th>نوع</th>
-            <th>تعداد صفحات</th>
-            <th>کاور</th>
-            <th>فایل</th>
-            <th>عملیات</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Title</td>
-                <td>@item.Category?.Name</td>
-                <td>@item.ISBN</td>
-                <td>
-                    @if (item.IsFree)
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>عنوان</th>
+                        <th>دسته‌بندی</th>
+                        <th>ISBN</th>
+                        <th>نوع</th>
+                        <th>سال</th>
+                        <th>تعداد صفحات</th>
+                        <th>کاور</th>
+                        <th>فایل</th>
+                        <th class="text-center">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
-                        <span class="badge bg-success">رایگان</span>
+                        <tr>
+                            <td class="fw-bold">@item.Title</td>
+                            <td><span class="badge bg-light text-dark">@item.Category?.Name</span></td>
+                            <td>@item.ISBN</td>
+                            <td>
+                                @if (item.IsFree)
+                                {
+                                    <span class="badge badge-free">رایگان</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-paid">پولی</span>
+                                }
+                            </td>
+                            <td>@item.PublishedYear</td>
+                            <td>@item.PageCount</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.CoverImagePath))
+                                {
+                                    <img src="@item.CoverImagePath" alt="کاور" style="height: 35px; border-radius: 4px;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.FilePath))
+                                {
+                                    <span class="badge bg-success">دارد</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">ندارد</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     }
-                    else
-                    {
-                        <span class="badge bg-warning text-dark">پولی</span>
-                    }
-                </td>
-                <td>@item.PageCount</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.CoverImagePath))
-                    {
-                        <img src="@item.CoverImagePath" alt="کاور" style="height: 40px; border-radius: 4px;" />
-                    }
-                    else
-                    {
-                        <span class="text-muted">-</span>
-                    }
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.FilePath))
-                    {
-                        <span class="badge bg-info">دارد</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger">ندارد</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">ویرایش</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">حذف</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

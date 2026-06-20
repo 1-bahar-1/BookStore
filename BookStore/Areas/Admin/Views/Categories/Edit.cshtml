@@ -4,32 +4,38 @@
     ViewData["Title"] = "ویرایش دسته‌بندی";
 }
 
+<div class="page-header">
+    <h2>ویرایش دسته‌بندی</h2>
+</div>
+
 <div class="row">
     <div class="col-md-6">
-        <div class="card shadow-sm">
+        <div class="card">
             <div class="card-body">
-                <h1 class="h4 mb-4">ویرایش دسته‌بندی</h1>
-
                 <form asp-action="Edit" asp-controller="Categories" asp-area="Admin" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <input type="hidden" asp-for="Id" />
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Name" class="form-label"></label>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold"></label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Slug" class="form-label"></label>
-                        <input asp-for="Slug" class="form-control" />
+                    <div class="mb-3">
+                        <label asp-for="Slug" class="form-label fw-bold"></label>
+                        <input asp-for="Slug" class="form-control" dir="ltr" />
                         <span asp-validation-for="Slug" class="text-danger"></span>
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                        <a asp-action="Index" class="btn btn-secondary">لغو</a>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> ذخیره تغییرات
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> لغو
+                        </a>
                     </div>
                 </form>
             </div>

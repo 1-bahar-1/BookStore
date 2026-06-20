@@ -1,27 +1,35 @@
 @model BookStore.Models.Keyword
 
 @{
-    ViewData["Title"] = "افزودن کلمه کلیدی جدید";
+    ViewData["Title"] = Model.Id == 0 ? "افزودن کلمه کلیدی" : "ویرایش کلمه کلیدی";
 }
+
+<div class="page-header">
+    <h2>@ViewData["Title"]</h2>
+</div>
 
 <div class="row">
     <div class="col-md-6">
-        <div class="card shadow-sm">
+        <div class="card">
             <div class="card-body">
-                <h1 class="h4 mb-4">افزودن کلمه کلیدی جدید</h1>
+                <form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" asp-controller="Keywords" asp-area="Admin" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <form asp-action="Create" asp-controller="Keywords" asp-area="Admin" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Word" class="form-label"></label>
-                        <input asp-for="Word" class="form-control" />
+                    <div class="mb-3">
+                        <label asp-for="Word" class="form-label fw-bold"></label>
+                        <input asp-for="Word" class="form-control" placeholder="کلمه کلیدی" dir="rtl" />
                         <span asp-validation-for="Word" class="text-danger"></span>
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">افزودن</button>
-                        <a asp-action="Index" class="btn btn-secondary">لغو</a>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> @ViewData["Title"]
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> لغو
+                        </a>
                     </div>
                 </form>
             </div>

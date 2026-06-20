@@ -1,111 +1,155 @@
 ﻿@model IEnumerable<BookStore.Models.Book>
 
 @{
-    ViewData["Title"] = "فروشگاه کتاب | صفحه اصلی";
+    ViewData["Title"] = "صفحه اصلی";
 }
 
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
+<!-- Hero Section -->
+<div class="hero-section text-center">
+    <div class="container position-relative">
+        <h1>کتابخانه دیجیتال شما</h1>
+        <p class="lead">هزاران کتاب در زمینه‌های مختلف را کاوش کنید</p>
+        <form class="search-box mt-4" method="get" asp-controller="Book" asp-action="Index">
+            <div class="input-group input-group-lg">
+                <input class="form-control" name="q" value="@Context.Request.Query["q"]" placeholder="جستجوی کتاب، نویسنده، موضوع..." />
+                <button class="btn btn-light text-primary" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-card p-4 mb-5">
+    <form method="get" asp-controller="Home" asp-action="Index" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold text-muted small">دسته‌بندی</label>
+            <select name="categoryId" class="form-select">
+                <option value="">همه دسته‌بندی‌ها</option>
+                @foreach (var cat in ViewBag.Categories)
+                {
+                    if (Context.Request.Query["categoryId"] == cat.Id.ToString())
+                    {
+                        <option value="@cat.Id" selected>@cat.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@cat.Id">@cat.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold text-muted small">نویسنده</label>
+            <select name="authorId" class="form-select">
+                <option value="">همه نویسنده‌ها</option>
+                @foreach (var author in ViewBag.Authors)
+                {
+                    if (Context.Request.Query["authorId"] == author.Id.ToString())
+                    {
+                        <option value="@author.Id" selected>@author.FullName</option>
+                    }
+                    else
+                    {
+                        <option value="@author.Id">@author.FullName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold text-muted small">کلمه کلیدی</label>
+            <select name="keywordId" class="form-select">
+                <option value="">همه کلمات کلیدی</option>
+                @foreach (var keyword in ViewBag.Keywords)
+                {
+                    if (Context.Request.Query["keywordId"] == keyword.Id.ToString())
+                    {
+                        <option value="@keyword.Id" selected>@keyword.Word</option>
+                    }
+                    else
+                    {
+                        <option value="@keyword.Id">@keyword.Word</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel"></i> اعمال فیلتر
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Books Grid -->
+<h2 class="section-title">📚 آخرین کتاب‌ها</h2>
+
+<div class="row g-4">
+    @if (!Model.Any())
+    {
+        <div class="col-12 text-center py-5">
+            <div class="text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                <p>هیچ کتابی یافت نشد.</p>
+            </div>
+        </div>
+    }
+
+    @foreach (var book in Model)
+    {
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card book-card h-100">
                 <div class="card-body">
-                    <form method="get" asp-controller="Home" asp-action="Index" class="row g-3">
-                        <div class="col-md-3">
-                            <select name="categoryId" class="form-select">
-                                <option value="">همه دسته‌بندی‌ها</option>
-                                @foreach (var cat in ViewBag.Categories)
-                                {
-                                    <option value="@cat.Id">@cat.Name</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select name="authorId" class="form-select">
-                                <option value="">همه نویسنده‌ها</option>
-                                @foreach (var author in ViewBag.Authors)
-                                {
-                                    <option value="@author.Id">@author.FullName</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select name="keywordId" class="form-select">
-                                <option value="">همه کلمات کلیدی</option>
-                                @foreach (var keyword in ViewBag.Keywords)
-                                {
-                                    <option value="@keyword.Id">@keyword.Word</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100">فیلتر</button>
-                        </div>
-                    </form>
+                    <h6 class="card-title">@book.Title</h6>
+
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-light text-dark border">@book.Category?.Name</span>
+                        <span class="badge bg-light text-dark border">📄 @book.PageCount صفحه</span>
+                        @if (book.IsFree)
+                        {
+                            <span class="badge badge-free">رایگان</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-paid">پولی</span>
+                        }
+                    </div>
+
+                    <a class="btn btn-primary w-100 mt-auto" href="/books/@book.Slug">
+                        مشاهده و دانلود <i class="bi bi-arrow-left"></i>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">📚 آخرین کتاب‌ها</h2>
-        <span class="text-muted">@ViewBag.TotalItems کتاب یافت شد</span>
-    </div>
-
-    <div class="row">
-        @if (!Model.Any())
-        {
-            <div class="col-12 text-center py-5">
-                <p class="text-muted">هیچ کتابی یافت نشد.</p>
-            </div>
-        }
-
-        @foreach (var book in Model)
-        {
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body">
-                        <h6 class="card-title fw-bold text-primary">
-                            @book.Title
-                        </h6>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-light text-dark border">
-                                @book.Category?.Name
-                            </span>
-                            <small class="text-muted">📄 @book.PageCount صفحه</small>
-                        </div>
-                        <a class="btn btn-sm btn-primary w-100 mt-2 shadow-sm"
-                           href="/books/@book.Slug">
-                            مشاهده و دانلود
-                        </a>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-    @if (ViewBag.TotalPages > 1)
-    {
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
-                @if (ViewBag.HasPreviousPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = ViewBag.CurrentPage - 1 })">قبلی</a>
-                    </li>
-                }
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = i })">@i</a>
-                    </li>
-                }
-                @if (ViewBag.HasNextPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = ViewBag.CurrentPage + 1 })">بعدی</a>
-                    </li>
-                }
-            </ul>
-        </nav>
     }
 </div>
+
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = ViewBag.CurrentPage - 1 })">
+                        <i class="bi bi-chevron-right"></i> قبلی
+                    </a>
+                </li>
+            }
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = i })">@i</a>
+                </li>
+            }
+            @if (ViewBag.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", "Home", new { categoryId = Context.Request.Query["categoryId"], authorId = Context.Request.Query["authorId"], keywordId = Context.Request.Query["keywordId"], page = ViewBag.CurrentPage + 1 })">
+                        بعدی <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

@@ -4,12 +4,14 @@
     ViewData["Title"] = "حذف نویسنده";
 }
 
+<div class="page-header">
+    <h2 class="text-danger"><i class="bi bi-exclamation-triangle"></i> حذف نویسنده</h2>
+</div>
+
 <div class="row">
     <div class="col-md-6">
-        <div class="card shadow-sm border-danger">
+        <div class="card border-danger">
             <div class="card-body">
-                <h1 class="h4 mb-4 text-danger">حذف نویسنده</h1>
-
                 <p>آیا از حذف نویسنده <strong>@Model.FullName</strong> مطمئن هستید؟</p>
                 <p class="text-muted small">تمامی ارتباطات این نویسنده با کتاب‌ها نیز حذف خواهد شد.</p>
 
@@ -17,8 +19,14 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
 
-                    <button type="submit" class="btn btn-danger">بله، حذف کن</button>
-                    <a asp-action="Index" class="btn btn-secondary">خیر، بازگشت</a>
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> بله، حذف کن
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-right"></i> بازگشت
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

@@ -1,49 +1,47 @@
 ﻿@model IEnumerable<BookStore.Models.Book>
 
 @{
-    ViewData["Title"] = "فروشگاه کتاب";
+    ViewData["Title"] = "همه کتاب‌ها";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">📚 آخرین کتاب‌ها</h2>
-    @if (Context.Request.Query.ContainsKey("q"))
-    {
-        <a href="/" class="btn btn-sm btn-outline-secondary">پاک کردن فیلتر جستجو</a>
-    }
+<div class="hero-section text-center" style="padding: 2.5rem 0;">
+    <h2>📚 کتاب‌های ما</h2>
+    <p class="text-white-50">لیست کامل کتاب‌های موجود در فروشگاه</p>
+    <form method="get" asp-action="Index" class="search-box mt-3">
+        <div class="input-group input-group-lg">
+            <input class="form-control" name="q" value="@Context.Request.Query["q"]" placeholder="جستجو در عنوان کتاب..." />
+            <button class="btn btn-light text-primary" type="submit"><i class="bi bi-search"></i></button>
+        </div>
+    </form>
 </div>
 
-<div class="row">
+<div class="row g-4">
     @if (!Model.Any())
     {
         <div class="col-12 text-center py-5">
-            <p class="text-muted">هیچ کتابی یافت نشد.</p>
+            <div class="text-muted">
+                <i class="bi bi-search fs-1 d-block mb-3"></i>
+                <p>هیچ کتابی یافت نشد.</p>
+            </div>
         </div>
     }
 
     @foreach (var book in Model)
     {
-        <div class="col-md-3 mb-4">
-            <div class="card shadow-sm h-100 border-0">
-                <!-- می‌توانید اینجا یک تگ img برای کاور کتاب اضافه کنید -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card book-card h-100">
                 <div class="card-body">
-                    <h6 class="card-title fw-bold text-primary">
-                        @book.Title
-                    </h6>
-
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-light text-dark border">
-                            @book.Category?.Name
-                        </span>
-                        <small class="text-muted">📄 @book.PageCount صفحه</small>
+                    <h6 class="card-title">@book.Title</h6>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-light text-dark border">@book.Category?.Name</span>
+                        <span class="badge bg-light text-dark border">@book.PageCount صفحه</span>
+                        @if (book.IsFree)
+                        {
+                            <span class="badge badge-free">رایگان</span>
+                        }
                     </div>
-
-                    @* <p class="card-text text-muted small" style="height: 40px; overflow: hidden;">
-                        @book.Description
-                    </p> *@
-
-                    <a class="btn btn-sm btn-primary w-100 mt-2 shadow-sm"
-                       href="/book/@book.Slug">
-                        مشاهده و دانلود
+                    <a class="btn btn-primary w-100 mt-auto" href="/books/@book.Slug">
+                        مشاهده <i class="bi bi-arrow-left"></i>
                     </a>
                 </div>
             </div>

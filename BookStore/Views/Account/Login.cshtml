@@ -1,41 +1,55 @@
 ﻿@{
-    ViewData["Title"] = "ورود";
+    ViewData["Title"] = "ورود به حساب";
 }
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow-sm p-4">
-            <h3 class="text-center mb-4">🔐 ورود</h3>
-
-            <form asp-action="Login" method="post">
-                @* نمایش خطاهای اعتبار سنجی عمومی *@
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <div class="mb-3">
-                    <label class="form-label">ایمیل</label>
-                    <input name="email" type="email" class="form-control" required />
+<div class="row justify-content-center align-items-center min-vh-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-lg border-0" style="border-radius: 20px;">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <div class="display-1 mb-2">🔐</div>
+                    <h3 class="fw-bold">ورود به حساب</h3>
+                    <p class="text-muted">خوش آمدید، لطفا وارد شوید</p>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">رمز عبور</label>
-                    <input name="password" type="password" class="form-control" required />
-                </div>
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="mb-3 form-check">
-                    <input name="rememberMe" type="checkbox" value="true" class="form-check-input" id="rememberMe" />
-                    <label class="form-check-label" for="rememberMe">مرا به خاطر بسپار</label>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">ایمیل</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input name="email" type="email" class="form-control border-start-0" placeholder="example@email.com" required />
+                        </div>
+                    </div>
 
-                <button type="submit" class="btn btn-primary w-100">ورود</button>
-            </form>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">رمز عبور</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input name="password" type="password" class="form-control border-start-0" placeholder="رمز عبور خود را وارد کنید" required />
+                        </div>
+                    </div>
 
-            <div class="text-center mt-3">
-                <a asp-action="Register">ثبت نام نکردی؟</a>
+                    <div class="mb-4 form-check">
+                        <input name="rememberMe" type="checkbox" value="true" class="form-check-input" id="rememberMe" />
+                        <label class="form-check-label" for="rememberMe">مرا به خاطر بسپار</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                        <i class="bi bi-box-arrow-in-right"></i> ورود
+                    </button>
+
+                    <div class="text-center">
+                        <span class="text-muted">حساب کاربری ندارید؟</span>
+                        <a asp-action="Register" class="text-decoration-none fw-bold">ثبت نام کنید</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

@@ -4,28 +4,43 @@
     ViewData["Title"] = ViewBag.KeywordWord;
 }
 
-<div class="container mt-4">
-    <a class="btn btn-outline-secondary mb-3" href="/">بازگشت به خانه</a>
-    <h2 class="fw-bold mb-4">🔑 کتاب‌های کلیدواژه <span class="text-primary">@ViewBag.KeywordWord</span></h2>
+<div class="hero-section text-center" style="padding: 2.5rem 0;">
+    <h2>🔑 کتاب‌های کلیدواژه «@ViewBag.KeywordWord»</h2>
+    <p class="text-white-50">تمامی کتاب‌های مرتبط با این کلیدواژه</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-light text-primary mt-2">
+        <i class="bi bi-arrow-right"></i> بازگشت به خانه
+    </a>
+</div>
 
-    <div class="row">
-        @if (!Model.Any())
-        {
-            <div class="col-12 text-center py-5">
-                <p class="text-muted">کتابی با این کلیدواژه یافت نشد.</p>
+<div class="row g-4">
+    @if (!Model.Any())
+    {
+        <div class="col-12 text-center py-5">
+            <div class="text-muted">
+                <i class="bi bi-tag fs-1 d-block mb-3"></i>
+                <p>کتابی با این کلیدواژه یافت نشد.</p>
             </div>
-        }
+        </div>
+    }
 
-        @foreach (var book in Model)
-        {
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body">
-                        <h6 class="card-title fw-bold text-primary">@book.Title</h6>
-                        <a class="btn btn-sm btn-primary w-100 mt-2 shadow-sm" href="/books/@book.Slug">مشاهده و دانلود</a>
+    @foreach (var book in Model)
+    {
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card book-card h-100">
+                <div class="card-body">
+                    <h6 class="card-title">@book.Title</h6>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-light text-dark border">@book.Category?.Name</span>
+                        @if (book.IsFree)
+                        {
+                            <span class="badge badge-free">رایگان</span>
+                        }
                     </div>
+                    <a class="btn btn-primary w-100 mt-auto" href="/books/@book.Slug">
+                        مشاهده <i class="bi bi-arrow-left"></i>
+                    </a>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>

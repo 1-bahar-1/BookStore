@@ -4,26 +4,32 @@
     ViewData["Title"] = "ویرایش کلمه کلیدی";
 }
 
+<div class="page-header">
+    <h2>ویرایش کلمه کلیدی</h2>
+</div>
+
 <div class="row">
     <div class="col-md-6">
-        <div class="card shadow-sm">
+        <div class="card">
             <div class="card-body">
-                <h1 class="h4 mb-4">ویرایش کلمه کلیدی</h1>
-
                 <form asp-action="Edit" asp-controller="Keywords" asp-area="Admin" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <input type="hidden" asp-for="Id" />
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Word" class="form-label"></label>
-                        <input asp-for="Word" class="form-control" />
+                    <div class="mb-3">
+                        <label asp-for="Word" class="form-label fw-bold"></label>
+                        <input asp-for="Word" class="form-control" dir="rtl" />
                         <span asp-validation-for="Word" class="text-danger"></span>
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                        <a asp-action="Index" class="btn btn-secondary">لغو</a>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> ذخیره تغییرات
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> لغو
+                        </a>
                     </div>
                 </form>
             </div>
