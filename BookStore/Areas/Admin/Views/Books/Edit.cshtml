@@ -1,20 +1,16 @@
-﻿@model BookStore.Areas.Admin.Models.BookFormViewModel
+@model BookStore.Areas.Admin.Models.BookFormViewModel
 
 @{
-    ViewData["Title"] = Model.Id == 0 ? "ایجاد کتاب جدید" : "ویرایش کتاب";
+    ViewData["Title"] = "ویرایش کتاب";
 }
 
 <div class="row">
     <div class="col-md-8">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h1 class="h4 mb-4">@ViewData["Title"]</h1>
+                <h1 class="h4 mb-4">ویرایش کتاب</h1>
 
-                <form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" 
-                      asp-controller="Books" 
-                      asp-area="Admin" 
-                      method="post" 
-                      enctype="multipart/form-data">
+                <form asp-action="Edit" asp-controller="Books" asp-area="Admin" method="post" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <input type="hidden" asp-for="Id" />
@@ -62,7 +58,7 @@
                     }
 
                     <div class="form-group mb-3">
-                        <label class="form-label">بارگذاری PDF @(string.IsNullOrEmpty(Model.FilePath) ? "" : "(اختیاری - برای جایگزینی فایل فعلی)")</label>
+                        <label class="form-label">بارگذاری PDF جدید (اختیاری)</label>
                         <input type="file" name="pdfFile" class="form-control" accept=".pdf" />
                     </div>
 
@@ -106,7 +102,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">@ViewData["Title"]</button>
+                        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
                         <a asp-action="Index" class="btn btn-secondary">لغو</a>
                     </div>
                 </form>
