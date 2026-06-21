@@ -203,8 +203,8 @@ public class BooksController : Controller
     }
 
     [HttpPost, ActionName("Delete")]
-    [ValidateAnti ]
-    
+    [ValidateAntiForgeryToken]
+
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var book = await _context.Books
