@@ -20,7 +20,9 @@ public class CategoriesController : Controller
     // لیست دسته‌بندی‌ها
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Categories.ToListAsync());
+        return View(await _context.Categories
+                .Include(c => c.Books)
+                .ToListAsync());
     }
 
     // صفحه ایجاد

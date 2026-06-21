@@ -14,7 +14,7 @@ public class BookController : Controller
         _context = context;
     }
 
-    // لیست + جستجو
+    
     [Authorize]
     public async Task<IActionResult> Index(string? q)
     {
@@ -34,7 +34,7 @@ public class BookController : Controller
         return View(books);
     }
 
-    // جزئیات با slug (SEO)
+    
     [HttpGet("/books/{slug}")]
     [Authorize]
     public async Task<IActionResult> Details(string slug)
@@ -55,7 +55,7 @@ public class BookController : Controller
         return View(book);
     }
 
-    // دانلود امن
+    
     [Authorize]
     public async Task<IActionResult> Download(int id)
     {
