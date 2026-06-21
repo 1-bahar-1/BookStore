@@ -98,6 +98,16 @@
     {
         <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="card book-card h-100">
+                @if (!string.IsNullOrEmpty(book.CoverImagePath))
+                {
+                    <img src="@book.CoverImagePath" alt="@book.Title" class="card-img-top" style="height: 200px; object-fit: cover;" />
+                }
+                else
+                {
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                }
                 <div class="card-body">
                     <h6 class="card-title">@book.Title</h6>
 

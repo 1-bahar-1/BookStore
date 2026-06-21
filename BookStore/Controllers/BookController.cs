@@ -41,6 +41,12 @@ public class BookController : Controller
     {
         var book = await _context.Books
             .Include(b => b.Category)
+            .Include(b => b.BookAuthors)
+            .ThenInclude(ba => ba.Author)
+            .Include(b => b.BookKeywords)
+            .ThenInclude(bk => bk.Keyword)
+            .Include(b => b.RelatedTo)
+            .ThenInclude(rt => rt.RelatedBook)
             .FirstOrDefaultAsync(b => b.Slug == slug);
 
         if (book == null)
