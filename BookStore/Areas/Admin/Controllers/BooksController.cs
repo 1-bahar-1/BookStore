@@ -102,16 +102,7 @@ public class BooksController : Controller
         if (book == null)
             return NotFound();
 
-        var vm = new BookFormViewModel
-        {
-            Id = book.Id,
-            Title = book.Title,
-            Slug = book.Slug,
-            PageCount = book.PageCount,
-            CategoryId = book.CategoryId,
-            FilePath = book.FilePath
-        };
-
+        var vm = MapToViewModel(book);
         await LoadFormDataAsync(vm);
 
         var selectedAuthorIds = new HashSet<int>((book.BookAuthors ?? new List<BookAuthor>()).Select(ba => ba.AuthorId));
