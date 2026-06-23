@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # SQL Server 2022
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: bookstore-sqlserver
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong@Passw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - bookstore-network
+
+  # ASP.NET Core App
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookstore-web
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BookStoreDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+    ports:
+      - "8080:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    volumes:
+      - wwwroot-covers:/app/wwwroot/covers
+    networks:
+      - bookstore-network
+
+volumes:
+  sqlserver-data:
+  wwwroot-covers:
+
+networks:
+  bookstore-network:

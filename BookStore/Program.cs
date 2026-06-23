@@ -1,5 +1,4 @@
 ﻿using BookStore.Data;
-using BookStore.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +35,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
-builder.Services.AddSingleton<IValidator<BookStore.Areas.Admin.Models.BookFormViewModel>, BookFormViewModelValidator>();
+
 
 var app = builder.Build();
 

@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+
+# VS
+.vs
+.vscode
+
+# Build results
+bin/
+obj/
+*.user
+*.suo
+
+# Docker
+Dockerfile*
+docker-compose*
+
+# NuGet
+*.nupkg
+packages/
+
+# EF Core
+Migrations/
+
+# Node (if any)
+node_modules/
+
+# IDE
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+test/
+*Tests/
+
+# Readme
+README.md
