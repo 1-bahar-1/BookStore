@@ -38,20 +38,25 @@ public class BookRelationsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(BookRelation relation)
     {
+        if (relation.BookId == 0 || relation.RelatedBookId == 0)
+        {
+            ModelState.AddModelError("", "لطفا هر دو کتاب را انتخاب کنید.");
+            ViewBag.Books = await _context.Books.OrderBy(b => b.Title).ToListAsync();
+            return View(relation);
+        }
+
         if (relation.BookId == relation.RelatedBookId)
         {
             ModelState.AddModelError("", "کتاب و کتاب مرتبط نمی‌توانند یکی باشند.");
+            ViewBag.Books = await _context.Books.OrderBy(b => b.Title).ToListAsync();
+            return View(relation);
         }
 
-        if (ModelState.IsValid)
-        {
-            _context.BookRelations.Add(relation);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        _context.BookRelations.Add(relation);
+        await _context.SaveChangesAsync();
 
-        ViewBag.Books = await _context.Books.OrderBy(b => b.Title).ToListAsync();
-        return View(relation);
+        TempData["Success"] = "رابطه کتاب با موفقیت اضافه شد.";
+        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Delete(int id)
