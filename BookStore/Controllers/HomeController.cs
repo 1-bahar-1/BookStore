@@ -1,5 +1,6 @@
 ﻿using BookStore.Data;
 using BookStore.Models;
+using BookStore.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,49 +18,98 @@ public class HomeController : Controller
     }
 
     [Authorize]
-    public async Task<IActionResult> Index(int? categoryId, int? authorId, int? keywordId, int page = 1)
+    public async Task<IActionResult> Index(
+        int? categoryId,
+        int? authorId,
+        int? keywordId,
+        string? q,
+        int page = 1)
     {
-        var query = _context.Books
+        if (page < 1) page = 1;
+
+        var baseQuery = _context.Books
+            .AsNoTracking()
             .Include(b => b.Category)
-            .Include(b => b.BookAuthors)
-            .ThenInclude(ba => ba.Author)
-            .Include(b => b.BookKeywords)
-            .ThenInclude(bk => bk.Keyword)
             .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            baseQuery = baseQuery.Where(b =>
+                b.Title.Contains(q) ||
+                (b.Description != null && b.Description.Contains(q)));
+        }
 
         if (categoryId.HasValue)
         {
-            query = query.Where(b => b.CategoryId == categoryId.Value);
+            baseQuery = baseQuery.Where(b => b.CategoryId == categoryId.Value);
         }
 
         if (authorId.HasValue)
         {
-            query = query.Where(b => b.BookAuthors.Any(ba => ba.AuthorId == authorId.Value));
+            baseQuery = baseQuery.Where(b =>
+                _context.BookAuthors.Any(ba => ba.BookId == b.Id && ba.AuthorId == authorId.Value));
         }
 
         if (keywordId.HasValue)
         {
-            query = query.Where(b => b.BookKeywords.Any(bk => bk.KeywordId == keywordId.Value));
+            baseQuery = baseQuery.Where(b =>
+                _context.BookKeywords.Any(bk => bk.BookId == b.Id && bk.KeywordId == keywordId.Value));
         }
 
-        var totalItems = await query.CountAsync();
+        var totalItems = await baseQuery.CountAsync();
         var totalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
 
-        var books = await query
+        if (totalPages == 0) totalPages = 1;
+        if (page > totalPages) page = totalPages;
+
+        var books = await baseQuery
             .OrderByDescending(b => b.Id)
             .Skip((page - 1) * PageSize)
             .Take(PageSize)
+            .Select(b => new BookCardDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Slug = b.Slug,
+                PageCount = b.PageCount,
+                IsFree = b.IsFree,
+                CoverImagePath = b.CoverImagePath,
+                CategoryName = b.Category.Name
+            })
             .ToListAsync();
 
-        ViewBag.Categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
-        ViewBag.Authors = await _context.Authors.OrderBy(a => a.FullName).ToListAsync();
-        ViewBag.Keywords = await _context.Keywords.OrderBy(k => k.Word).ToListAsync();
-        ViewBag.CurrentPage = page;
-        ViewBag.TotalPages = totalPages;
-        ViewBag.TotalItems = totalItems;
-        ViewBag.HasPreviousPage = page > 1;
-        ViewBag.HasNextPage = page < totalPages;
+        var categories = await _context.Categories
+            .AsNoTracking()
+            .OrderBy(c => c.Name)
+            .ToListAsync();
 
-        return View(books);
+        var authors = await _context.Authors
+            .AsNoTracking()
+            .OrderBy(a => a.FullName)
+            .ToListAsync();
+
+        var keywords = await _context.Keywords
+            .AsNoTracking()
+            .OrderBy(k => k.Word)
+            .ToListAsync();
+
+        var vm = new HomeIndexViewModel
+        {
+            Books = books,
+            Categories = categories,
+            Authors = authors,
+            Keywords = keywords,
+            CurrentPage = page,
+            TotalPages = totalPages,
+            TotalItems = totalItems,
+            HasPreviousPage = page > 1,
+            HasNextPage = page < totalPages,
+            SelectedCategoryId = categoryId,
+            SelectedAuthorId = authorId,
+            SelectedKeywordId = keywordId,
+            SearchQuery = q
+        };
+
+        return View(vm);
     }
 }
