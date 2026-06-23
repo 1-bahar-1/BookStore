@@ -1,4 +1,6 @@
 ﻿using BookStore.Data;
+using BookStore.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +36,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+builder.Services.AddSingleton<IValidator<BookStore.Areas.Admin.Models.BookFormViewModel>, BookFormViewModelValidator>();
+
 var app = builder.Build();
 
 
@@ -66,54 +70,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-// Seed اولیه Role و Admin User
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-    var adminRole = "Admin";
-
-    if (!await roleManager.RoleExistsAsync(adminRole))
-    {
-        await roleManager.CreateAsync(new IdentityRole(adminRole));
-    }
-
-    var adminEmail = "admin@test.com";
-    var adminPassword = "Admin123!";
-
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-    if (adminUser == null)
-    {
-        adminUser = new IdentityUser
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-
-        var createResult = await userManager.CreateAsync(adminUser, adminPassword);
-
-        if (createResult.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, adminRole);
-        }
-        else
-        {
-            foreach (var error in createResult.Errors)
-            {
-                Console.WriteLine($"Admin seed error: {error.Description}");
-            }
-        }
-    }
-    else
-    {
-        if (!await userManager.IsInRoleAsync(adminUser, adminRole))
-        {
-            await userManager.AddToRoleAsync(adminUser, adminRole);
-        }
-    }
-}
 
 app.Run();
